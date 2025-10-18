@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>StockSense - Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="title">StockSense</div>
+      </div>
+      <nav class="menu">
+        <a class="active">Dashboard</a>
+        <a>Previsões</a>
+        <a>Estoque</a>
+        <a>Alertas <span class="badge red">12</span></a>
+        <a>Sugestões <span class="badge yellow">8</span></a>
+        <a>Relatórios</a>
+        <a>Configurações</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="search">Modo Demo</div>
+        <div class="actions">
+          <button id="importarDadosBtn" class="btn primary small">Importar Dados</button>
+          <button id="useMock" class="btn outline small">Usar dados demo</button>
+        </div>
+      </header>
+
+      <!-- Modal de Importação -->
+      <div id="importModal" class="modal">
+        <div class="modal-content">
+          <h3>Importar Dados</h3>
+          <form id="uploadForm">
+            <label>Histórico de Vendas</label>
+            <input type="file" id="vendas"
+              accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              required />
+
+            <label>Estoque</label>
+            <input type="file" id="estoque"
+              accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              required />
+
+            <div class="modal-actions">
+              <button type="submit" class="btn primary">Enviar e Processar</button>
+              <button type="button" id="closeModal" class="btn outline">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <section class="content">
+        <div class="cards">
+          <div class="card danger">
+            <h3>PRODUTOS EM RISCO</h3>
+            <div id="produtosRisco" class="big placeholder">--</div>
+            <p id="riscoDesc">Nenhum dado carregado</p>
+          </div>
+
+          <div class="card warn">
+            <h3>EXCESSO DE ESTOQUE</h3>
+            <div id="excessoEstoque" class="big placeholder">--</div>
+            <p id="excessoDesc">Nenhum dado carregado</p>
+          </div>
+
+          <div class="card">
+            <h3>SUGESTÕES DE COMPRA</h3>
+            <div id="sugestoesCompra" class="big placeholder">--</div>
+            <p id="sugestoesDesc">Nenhum dado carregado</p>
+          </div>
+
+          <div class="card green">
+            <h3>OPORTUNIDADE</h3>
+            <div id="oportunidade" class="big placeholder">--</div>
+            <p id="oportunidadeDesc">Nenhum dado carregado</p>
+          </div>
+        </div>
+
+
+        <!-- Charts row -->
+        <div class="row">
+          <div class="panel large">
+            <h4>Previsão de Demanda - Próximos 7 dias</h4>
+            <canvas id="demandChart"></canvas>
+          </div>
+
+          <div class="panel small">
+            <h4>Status do Estoque</h4>
+            <canvas id="donutChart"></canvas>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h4>Alertas Recentes</h4>
+          <div id="alertsList" class="alerts">
+            <!-- alerts injected by JS -->
+          </div>
+        </div>
+  </div>
+  </section>
+  </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
