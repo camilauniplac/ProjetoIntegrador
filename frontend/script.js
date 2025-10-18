@@ -1,4 +1,5 @@
-// Variáveis globais para armazenar as instâncias dos gráficos
+import { API_BASE_URL } from "./config.js";
+
 let demandChartInstance = null;
 let donutChartInstance = null;
 
@@ -139,7 +140,7 @@ function atualizarAlertas(alertas) {
 
 document.getElementById("useMock").addEventListener("click", async () => {
   try {
-    const response = await fetch("http://127.0.0.1:5000/mock");
+const response = await fetch(`${API_BASE_URL}/mock`);
     const data = await response.json();
 
     if (data.erro) {
@@ -228,7 +229,7 @@ uploadForm.addEventListener("submit", async (e) => {
     btn.textContent = "Processando...";
     btn.disabled = true;
 
-    const res = await fetch("http://127.0.0.1:5000/processar", {
+    const res = await fetch(`${API_BASE_URL}/processar`, {
       method: "POST",
       body: formData
     });
