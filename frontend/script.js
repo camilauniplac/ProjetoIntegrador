@@ -9,7 +9,6 @@ function atualizarDashboard(data) {
   document.getElementById("produtosRisco").textContent = data.produtos_em_risco ?? 0;
   document.getElementById("excessoEstoque").textContent = data.excesso_estoque ?? 0;
   document.getElementById("sugestoesCompra").textContent = data.sugestoes_compra ?? 0;
-  document.getElementById("oportunidade").textContent = "R$ " + (data.oportunidade ?? 0).toLocaleString();
 
   // ===== Mensagem dinâmica para "Risco" =====
   const riscoDescEl = document.getElementById("riscoDesc");

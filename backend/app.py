@@ -118,7 +118,6 @@ def processar_dados(vendas, estoque):
 
         # Sugestões
         sugestoes = produtos_em_risco[col_produto_estoque].tolist()
-        oportunidade = len(produtos_em_risco) * 4500
 
         # Alertas
         alertas = []
@@ -142,7 +141,6 @@ def processar_dados(vendas, estoque):
             "produtos_em_risco": int(len(produtos_em_risco)),
             "excesso_estoque": int(len(excesso_estoque)),
             "sugestoes_compra": int(len(sugestoes)),
-            "oportunidade": float(oportunidade),
             "vendas_labels": [d.strftime("%d/%m") for d in ultimos_7.index],
             "vendas_valores": [float(v) for v in ultimos_7.values],
             "alertas": alertas
