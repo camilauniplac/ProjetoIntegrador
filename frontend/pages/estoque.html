@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StockVision • Estoque</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/estoque.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+
+<body class="dashboard-body">
+  <div id="sidebar-container"></div>
+
+  <div class="dashboard-layout">
+    <main class="dashboard-main">
+      <!-- Cabeçalho -->
+      <div class="dashboard-header">
+        <div>
+          <h1>Controle de Estoque</h1>
+          <p>Lista completa de produtos em estoque</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline-primary" id="btnExportar">
+            <i class="fas fa-download"></i> Exportar
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+<!-- <div class="section-filtro">
+  <div class="table-filters">
+    <div class="filter-group">
+      <label for="searchProduto">Produto</label>
+      <input type="text" id="searchProduto" class="input-search" placeholder="Buscar por nome ou código...">
+    </div>
+
+    <div class="filter-group">
+      <label for="filterCategoria">Categoria</label>
+      <select id="filterCategoria" class="select-filter">
+        <option value="">Todas as categorias</option>
+        <option value="Limpeza">Limpeza</option>
+        <option value="Alimentos">Alimentos</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="filterFornecedor">Fornecedor</label>
+      <select id="filterFornecedor" class="select-filter">
+        <option value="">Todos os fornecedores</option>
+        <option value="da Costa - EI">da Costa - EI</option>
+        <option value="Alimentos São João">Alimentos São João</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="filterQtdMin">Qtd mínima</label>
+      <input type="number" id="filterQtdMin" class="input-search" placeholder="Ex: 10">
+    </div>
+
+    <div class="filter-group">
+      <label for="filterQtdMax">Qtd máxima</label>
+      <input type="number" id="filterQtdMax" class="input-search" placeholder="Ex: 500">
+    </div>
+
+    <div class="filter-group">
+      <label for="filterValidadeInicio">Validade início</label>
+      <input type="date" id="filterValidadeInicio" class="input-search">
+    </div>
+
+    <div class="filter-group">
+      <label for="filterValidadeFim">Validade fim</label>
+      <input type="date" id="filterValidadeFim" class="input-search">
+    </div>
+
+    <div class="filter-group">
+      <label>&nbsp;</label>
+      <button id="btnLimparFiltro" class="btn btn-outline-primary">Limpar</button>
+    </div>
+  </div>
+</div> -->
+
+
+      <!-- Tabela de Produtos -->
+      <div class="section-card">
+        <div class="table-responsive">
+          <table class="data-table" id="tabelaEstoque">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Produto</th>
+                <th>Categoria</th>
+                <th>Preço Unitário</th>
+                <th>Quantidade</th>
+                <th>Unidade</th>
+                <th>Fornecedor</th>
+                <th>Data de Entrada</th>
+                <th>Validade</th>
+                <th>Código de Barras</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="10" style="text-align:center;">Carregando produtos...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+<script type="module" src="../js/estoque.js"></script>
+</body>
+</html>
