@@ -37,123 +37,92 @@
                 </div>
             </div>
 
-            <!-- KPI Cards -->
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <h3>Produtos em Risco</h3>
-                        <div class="kpi-icon red">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-value">
-                        <h2>12</h2>
-                        <span class="kpi-trend down">
-                            <i class="fas fa-arrow-down"></i> 15%
-                        </span>
-                    </div>
-                    <p class="kpi-desc">Ruptura prevista em menos de 3 dias</p>
-                    <div class="kpi-footer">
-                        <a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <h3>Produtos em Risco</h3>
+            <div class="kpi-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+          </div>
+          <div class="kpi-value">
+            <h2 id="kpi-risco">0</h2>
+            <span id="kpi-trend-risco" class="kpi-trend down"><i class="fas fa-arrow-down"></i> 0%</span>
+          </div>
+          <p class="kpi-desc">Ruptura prevista em menos de 3 dias</p>
+          <div class="kpi-footer"><a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a></div>
+        </div>
 
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <h3>Excesso de Estoque</h3>
-                        <div class="kpi-icon orange">
-                            <i class="fas fa-boxes"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-value">
-                        <h2>8</h2>
-                        <span class="kpi-trend down">
-                            <i class="fas fa-arrow-down"></i> 25%
-                        </span>
-                    </div>
-                    <p class="kpi-desc">Produtos parados há mais de 45 dias</p>
-                    <div class="kpi-footer">
-                        <a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <h3>Próximo vencimento</h3>
+            <div class="kpi-icon orange"><i class="fas fa-clock"></i></div>
+          </div>
+          <div class="kpi-value">
+            <h2 id="kpi-vencimento">R$ 0</h2>
+            <span class="kpi-trend up"><i class="fas fa-arrow-up"></i> 0%</span>
+          </div>
+          <p class="kpi-desc">Itens com validade em até 30 dias</p>
+          <div class="kpi-footer"><a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a></div>
+        </div>
 
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <h3>Sugestões de Compra</h3>
-                        <div class="kpi-icon blue">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-value">
-                        <h2>8</h2>
-                        <span class="kpi-trend up">
-                            <i class="fas fa-arrow-up"></i> 10%
-                        </span>
-                    </div>
-                    <p class="kpi-desc">Reposições recomendadas para hoje</p>
-                    <div class="kpi-footer">
-                        <a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <h3>Excesso de Estoque</h3>
+            <div class="kpi-icon blue"><i class="fas fa-boxes"></i></div>
+          </div>
+          <div class="kpi-value">
+            <h2 id="kpi-excesso">0</h2>
+            <span id="kpi-trend-excesso" class="kpi-trend up"><i class="fas fa-arrow-up"></i> 0%</span>
+          </div>
+          <p class="kpi-desc">Produtos parados há mais de 45 dias</p>
+          <div class="kpi-footer"><a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a></div>
+        </div>
 
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <h3>Oportunidade</h3>
-                        <div class="kpi-icon green">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-value">
-                        <h2>R$ 45k</h2>
-                        <span class="kpi-trend up">
-                            <i class="fas fa-arrow-up"></i> 8%
-                        </span>
-                    </div>
-                    <p class="kpi-desc">Potencial de vendas adicionais</p>
-                    <div class="kpi-footer">
-                        <a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <h3>Sugestões de Compra</h3>
+            <div class="kpi-icon green"><i class="fas fa-shopping-cart"></i></div>
+          </div>
+          <div class="kpi-value">
+            <h2 id="kpi-sugestoes">0</h2>
+          <span id="kpi-trend-sugestoes" class="kpi-trend neutral"><i class="fas fa-minus"></i> 0%</span>
+          </div>
+          <p class="kpi-desc">Reposições recomendadas para hoje</p>
+          <div class="kpi-footer"><a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a></div>
+        </div>
+
+
+      </div>
+
+      <!-- Charts Row -->
+      <div class="charts-row">
+        <div class="chart-card large">
+          <div class="chart-header">
+            <h3>Previsão de Demanda - Próximos 7 dias</h3>
+            <div class="chart-legend-inline">
+              <span><span class="legend-dot blue"></span> Real</span>
+              <span><span class="legend-dot green"></span> Previsto</span>
             </div>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="demandChart"></canvas>
+          </div>
+        </div>
 
-            <!-- Charts Row -->
-            <div class="charts-row">
-                <div class="chart-card large">
-                    <div class="chart-header">
-                        <h3>Previsão de Demanda - Próximos 7 dias</h3>
-                        <div class="chart-legend-inline">
-                            <span><span class="legend-dot blue"></span> Real</span>
-                            <span><span class="legend-dot green"></span> Previsto</span>
-                        </div>
-                    </div>
-                    <div class="chart-container" style="height: 300px;">
-                        <canvas id="demandChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-card small">
-                    <div class="chart-header">
-                        <h3>Status do Estoque</h3>
-                    </div>
-                    <div class="chart-container" style="height: 300px;">
-                        <canvas id="statusChart"></canvas>
-                    </div>
-                    <div class="status-legend">
-                        <div class="legend-item">
-                            <span class="legend-dot green"></span>
-                            <span>Normal: 245 produtos</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-dot orange"></span>
-                            <span>Atenção: 32 produtos</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-dot red"></span>
-                            <span>Crítico: 12 produtos</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="chart-card small">
+          <div class="chart-header">
+            <h3>Status do Estoque</h3>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="statusChart"></canvas>
+          </div>
+          <div class="status-legend" id="status-legend">
+            <div class="legend-item"><span class="legend-dot green"></span><span>Normal: -- produtos</span></div>
+            <div class="legend-item"><span class="legend-dot orange"></span><span>Atenção: -- produtos</span></div>
+            <div class="legend-item"><span class="legend-dot red"></span><span>Crítico: -- produtos</span></div>
+          </div>
+        </div>
+      </div>
 
             <!-- Alerts Section -->
             <div class="section-card">
@@ -370,7 +339,7 @@
         });
     </script>
     <script src="../js/main.js"></script>
-    <script src="../js/dashboard.js"></script> 
+    <script type="module" src="../js/dashboard.js"></script> 
 </body>
 </html>
 
