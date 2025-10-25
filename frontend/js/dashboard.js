@@ -143,6 +143,69 @@ document.addEventListener("DOMContentLoaded", async () => {
       `).join("");
     }
 
+
+    // Search functionality
+    const searchInput = document.querySelector('.input-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    }
+    
+    // Filter by status
+    const filterSelect = document.querySelector('.select-filter');
+    if (filterSelect) {
+        filterSelect.addEventListener('change', function(e) {
+            const filterValue = e.target.value;
+            const rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                if (filterValue === 'Todos os status') {
+                    row.style.display = '';
+                } else {
+                    const status = row.querySelector('.status-badge');
+                    if (status && status.textContent.trim() === filterValue) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    }
+    
+    // Action buttons
+    document.querySelectorAll('.btn-action').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productName = row.querySelector('strong').textContent;
+            
+            if (confirm(`Criar pedido de reposição para ${productName}?`)) {
+                window.StockSense.showNotification(
+                    `Pedido criado para ${productName}`,
+                    'success'
+                );
+            }
+        });
+    });
+    
+    // Alert action buttons
+    document.querySelectorAll('.alert-action .btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const alertContent = this.closest('.alert-item').querySelector('h4').textContent;
+            window.StockSense.showNotification(
+                `Ação iniciada: ${alertContent}`,
+                'success'
+            );
+        });
+    });
+
   } catch (err) {
     console.error("Erro ao carregar dados do dashboard:", err);
   }
@@ -165,85 +228,3 @@ function atualizarKpiTrend(kpi, valor) {
     trend.innerHTML = `<i class="fas fa-minus"></i> 0%`;
   }
 }
-
-//     // Simulate real-time updates
-//     function simulateRealTimeUpdate() {
-//         // This would connect to a real API in production
-//         console.log('Real-time update simulated');
-//     }
-    
-//     // Update every 30 seconds
-//     setInterval(simulateRealTimeUpdate, 30000);
-    
-//     // Table sorting (basic implementation)
-//     const tableHeaders = document.querySelectorAll('.data-table th');
-//     tableHeaders.forEach(header => {
-//         header.style.cursor = 'pointer';
-//         header.addEventListener('click', function() {
-//             console.log('Sort by:', this.textContent);
-//             // Implement sorting logic here
-//         });
-//     });
-    
-//     // Search functionality
-//     const searchInput = document.querySelector('.input-search');
-//     if (searchInput) {
-//         searchInput.addEventListener('input', function(e) {
-//             const searchTerm = e.target.value.toLowerCase();
-//             const rows = document.querySelectorAll('.data-table tbody tr');
-            
-//             rows.forEach(row => {
-//                 const text = row.textContent.toLowerCase();
-//                 row.style.display = text.includes(searchTerm) ? '' : 'none';
-//             });
-//         });
-//     }
-    
-//     // Filter by status
-//     const filterSelect = document.querySelector('.select-filter');
-//     if (filterSelect) {
-//         filterSelect.addEventListener('change', function(e) {
-//             const filterValue = e.target.value;
-//             const rows = document.querySelectorAll('.data-table tbody tr');
-            
-//             rows.forEach(row => {
-//                 if (filterValue === 'Todos os status') {
-//                     row.style.display = '';
-//                 } else {
-//                     const status = row.querySelector('.status-badge');
-//                     if (status && status.textContent.trim() === filterValue) {
-//                         row.style.display = '';
-//                     } else {
-//                         row.style.display = 'none';
-//                     }
-//                 }
-//             });
-//         });
-//     }
-    
-//     // Action buttons
-//     document.querySelectorAll('.btn-action').forEach(btn => {
-//         btn.addEventListener('click', function() {
-//             const row = this.closest('tr');
-//             const productName = row.querySelector('strong').textContent;
-            
-//             if (confirm(`Criar pedido de reposição para ${productName}?`)) {
-//                 window.StockSense.showNotification(
-//                     `Pedido criado para ${productName}`,
-//                     'success'
-//                 );
-//             }
-//         });
-//     });
-    
-//     // Alert action buttons
-//     document.querySelectorAll('.alert-action .btn').forEach(btn => {
-//         btn.addEventListener('click', function() {
-//             const alertContent = this.closest('.alert-item').querySelector('h4').textContent;
-//             window.StockSense.showNotification(
-//                 `Ação iniciada: ${alertContent}`,
-//                 'success'
-//             );
-//         });
-//     });
-// });

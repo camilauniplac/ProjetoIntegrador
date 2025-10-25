@@ -144,6 +144,18 @@ def get_dashboard_data():
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
+@app.route('/api/categorias')
+def get_categorias():
+    """Retorna lista de categorias únicas do estoque"""
+    try:
+        json_path = os.path.join(os.getcwd(), STOCK_FILE)
+        with open(json_path, encoding='utf-8') as f:
+            data = json.load(f)
+
+        categorias = sorted({item["categoria"] for item in data if "categoria" in item})
+        return jsonify(categorias)
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,7 +8,8 @@
   <link rel="stylesheet" href="../css/styles.css" />
   <link rel="stylesheet" href="../css/estoque.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
 </head>
 
 <body class="dashboard-body">
@@ -23,68 +25,47 @@
         </div>
         <div class="header-actions">
           <button class="btn btn-outline-primary" id="btnExportar">
+            <i class="fas fa-add"></i> Cadastrar Produto
+          </button>
+          <button class="btn btn-outline-primary" id="btnExportar">
             <i class="fas fa-download"></i> Exportar
           </button>
         </div>
       </div>
 
-      <!-- Filtros -->
-<!-- <div class="section-filtro">
-  <div class="table-filters">
-    <div class="filter-group">
-      <label for="searchProduto">Produto</label>
-      <input type="text" id="searchProduto" class="input-search" placeholder="Buscar por nome ou código...">
-    </div>
-
-    <div class="filter-group">
-      <label for="filterCategoria">Categoria</label>
-      <select id="filterCategoria" class="select-filter">
-        <option value="">Todas as categorias</option>
-        <option value="Limpeza">Limpeza</option>
-        <option value="Alimentos">Alimentos</option>
-      </select>
-    </div>
-
-    <div class="filter-group">
-      <label for="filterFornecedor">Fornecedor</label>
-      <select id="filterFornecedor" class="select-filter">
-        <option value="">Todos os fornecedores</option>
-        <option value="da Costa - EI">da Costa - EI</option>
-        <option value="Alimentos São João">Alimentos São João</option>
-      </select>
-    </div>
-
-    <div class="filter-group">
-      <label for="filterQtdMin">Qtd mínima</label>
-      <input type="number" id="filterQtdMin" class="input-search" placeholder="Ex: 10">
-    </div>
-
-    <div class="filter-group">
-      <label for="filterQtdMax">Qtd máxima</label>
-      <input type="number" id="filterQtdMax" class="input-search" placeholder="Ex: 500">
-    </div>
-
-    <div class="filter-group">
-      <label for="filterValidadeInicio">Validade início</label>
-      <input type="date" id="filterValidadeInicio" class="input-search">
-    </div>
-
-    <div class="filter-group">
-      <label for="filterValidadeFim">Validade fim</label>
-      <input type="date" id="filterValidadeFim" class="input-search">
-    </div>
-
-    <div class="filter-group">
-      <label>&nbsp;</label>
-      <button id="btnLimparFiltro" class="btn btn-outline-primary">Limpar</button>
-    </div>
-  </div>
-</div> -->
-
 
       <!-- Tabela de Produtos -->
-      <div class="section-card">
-        <div class="table-responsive">
+      <div class="section-card" style="padding: 5px">
+        <!-- Filtros -->
+        <div class="filter-section" style="margin-bottom: 0;">
+          <input type="text" id="filtro-nome" placeholder="Buscar produto..." />
+
+          <select id="filtro-categoria">
+            <option value="">Todas as categorias</option>
+          </select>
+
+          <!-- <select id="filtro-fornecedor">
+            <option value="">Todos os fornecedores</option>
+          </select> -->
+
+          <select id="filtro-quantidade">
+            <option value="">Todas as quantidades</option>
+            <option value="baixo">Baixo estoque (&lt; 20)</option>
+            <option value="medio">Estoque médio (20–200)</option>
+            <option value="alto">Alto estoque (&gt; 200)</option>
+          </select>
+
+          <button class="btn btn-outline-secondary" id="btnLimparFiltros">
+            <i class="fas fa-undo"></i> Limpar
+          </button>
+          
+        <div class="estoque-info">
+          Exibindo <span id="totalFiltrado">0</span> de <span id="totalGeral">0</span> produtos
+        </div>
+
+        </div>
+
+        <div class="table-responsive" style="margin-top: 0;">
           <table class="data-table" id="tabelaEstoque">
             <thead>
               <tr>
@@ -98,10 +79,13 @@
                 <th>Data de Entrada</th>
                 <th>Validade</th>
                 <th>Código de Barras</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td colspan="10" style="text-align:center;">Carregando produtos...</td></tr>
+              <tr>
+                <td colspan="10" style="text-align:center;">Carregando produtos...</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -109,6 +93,7 @@
     </main>
   </div>
 
-<script type="module" src="../js/estoque.js"></script>
+  <script type="module" src="../js/estoque.js"></script>
 </body>
+
 </html>
