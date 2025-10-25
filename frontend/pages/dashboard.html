@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockVision • Dashboard</title>
+    <meta name="description" content="Demonstração interativa do dashboard StockSense AI">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="dashboard-body">
+
+    <div id="sidebar-container"></div>
+
+    <div class="dashboard-layout">
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div>
+                    <h1>Visão Geral</h1>
+                    <p>Dashboard atualizado em tempo real</p>
+                </div>
+                <div class="header-actions">
+                    <select class="select-period">
+                        <option>Últimos 7 dias</option>
+                        <option>Últimos 15 dias</option>
+                        <option selected>Últimos 30 dias</option>
+                        <option>Últimos 90 dias</option>
+                    </select>
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-download"></i> Exportar
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <h3>Produtos em Risco</h3>
+                        <div class="kpi-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+                    </div>
+                    <div class="kpi-value">
+                        <h2 id="kpi-risco">0</h2>
+                        <span id="kpi-trend-risco" class="kpi-trend down"><i class="fas fa-arrow-down"></i> 0%</span>
+                    </div>
+                    <p class="kpi-desc">Ruptura prevista em menos de 3 dias</p>
+                    <div class="kpi-footer"><a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a></div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <h3>Próximo do Vencimento</h3>
+                        <div class="kpi-icon orange"><i class="fas fa-clock"></i></div>
+                    </div>
+                    <div class="kpi-value">
+                        <h2 id="kpi-vencimento">R$ 0</h2>
+                        <span class="kpi-trend up"><i class="fas fa-arrow-up"></i> 0%</span>
+                    </div>
+                    <p class="kpi-desc">Itens com validade em até 30 dias</p>
+                    <div class="kpi-footer"><a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a></div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <h3>Excesso de Estoque</h3>
+                        <div class="kpi-icon blue"><i class="fas fa-boxes"></i></div>
+                    </div>
+                    <div class="kpi-value">
+                        <h2 id="kpi-excesso">0</h2>
+                        <span id="kpi-trend-excesso" class="kpi-trend up"><i class="fas fa-arrow-up"></i> 0%</span>
+                    </div>
+                    <p class="kpi-desc">Produtos parados há mais de 45 dias</p>
+                    <div class="kpi-footer"><a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a></div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <h3>Sugestões de Compra</h3>
+                        <div class="kpi-icon green"><i class="fas fa-shopping-cart"></i></div>
+                    </div>
+                    <div class="kpi-value">
+                        <h2 id="kpi-sugestoes">0</h2>
+                        <span id="kpi-trend-sugestoes" class="kpi-trend neutral"><i class="fas fa-minus"></i> 0%</span>
+                    </div>
+                    <p class="kpi-desc">Reposições recomendadas para hoje</p>
+                    <div class="kpi-footer"><a href="#">Ver detalhes <i class="fas fa-arrow-right"></i></a></div>
+                </div>
+
+
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h3>Previsão de Demanda - Próximos 7 dias</h3>
+                        <div class="chart-legend-inline">
+                            <span><span class="legend-dot blue"></span> Real</span>
+                            <span><span class="legend-dot green"></span> Previsto</span>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="demandChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card small">
+                    <div class="chart-header">
+                        <h3>Status do Estoque</h3>
+                    </div>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                    <div class="status-legend" id="status-legend">
+                        <div class="legend-item"><span class="legend-dot green"></span><span>Normal: -- produtos</span>
+                        </div>
+                        <div class="legend-item"><span class="legend-dot orange"></span><span>Atenção: --
+                                produtos</span></div>
+                        <div class="legend-item"><span class="legend-dot red"></span><span>Crítico: -- produtos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>Alertas Recentes</h3>
+                    <a href="#" class="link-primary">Ver todos</a>
+                </div>
+                <div class="alerts-list">
+                    <div class="alert-item critical">
+                        <div class="alert-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Ruptura Iminente</h4>
+                            <p><strong>Produto: Arroz 5kg</strong> - Estoque atual: 8 un | Previsão: Falta em 2 dias</p>
+                            <span class="alert-time"><i class="fas fa-clock"></i> Há 15 minutos</span>
+                        </div>
+                        <div class="alert-action">
+                            <button class="btn btn-sm btn-outline">Ver Detalhes</button>
+                        </div>
+                    </div>
+
+                    <div class="alert-item critical">
+                        <div class="alert-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Ruptura Iminente</h4>
+                            <p><strong>Produto: Feijão 1kg</strong> - Estoque atual: 5 un | Previsão: Falta em 1 dia</p>
+                            <span class="alert-time"><i class="fas fa-clock"></i> Há 1 hora</span>
+                        </div>
+                        <div class="alert-action">
+                            <button class="btn btn-sm btn-outline">Ver Detalhes</button>
+                        </div>
+                    </div>
+
+                    <div class="alert-item warning">
+                        <div class="alert-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Excesso de Estoque</h4>
+                            <p><strong>Produto: Macarrão 500g</strong> - Estoque parado há 52 dias | Capital: R$ 2.450
+                            </p>
+                            <span class="alert-time"><i class="fas fa-clock"></i> Há 3 horas</span>
+                        </div>
+                        <div class="alert-action">
+                            <button class="btn btn-sm btn-outline">Ver Detalhes</button>
+                        </div>
+                    </div>
+
+                    <div class="alert-item success">
+                        <div class="alert-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Momento Ideal de Compra</h4>
+                            <p><strong>Categoria: Bebidas</strong> - Tendência de alta detectada | Oportunidade: R$
+                                8.500</p>
+                            <span class="alert-time"><i class="fas fa-clock"></i> Há 5 horas</span>
+                        </div>
+                        <div class="alert-action">
+                            <button class="btn btn-sm btn-success">Ver Sugestões</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>Produtos Críticos</h3>
+                    <div class="table-filters">
+                        <input type="text" placeholder="Buscar produto..." class="input-search">
+                        <select class="select-filter">
+                            <option>Todos os status</option>
+                            <option>Crítico</option>
+                            <option>Atenção</option>
+                            <option>Normal</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Categoria</th>
+                                <th>Estoque Atual</th>
+                                <th>Demanda Prevista (7d)</th>
+                                <th>Status</th>
+                                <th>Sugestão</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="product-avatar">AR</div>
+                                        <div>
+                                            <strong>Arroz 5kg</strong>
+                                            <span class="product-sku">SKU: ARZ-001</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Grãos</td>
+                                <td><span class="stock-qty">8 un</span></td>
+                                <td><span class="demand-qty">45 un</span></td>
+                                <td><span class="status-badge critical">Crítico</span></td>
+                                <td><strong>Comprar 60 un</strong></td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="product-avatar">FE</div>
+                                        <div>
+                                            <strong>Feijão 1kg</strong>
+                                            <span class="product-sku">SKU: FEJ-001</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Grãos</td>
+                                <td><span class="stock-qty">5 un</span></td>
+                                <td><span class="demand-qty">38 un</span></td>
+                                <td><span class="status-badge critical">Crítico</span></td>
+                                <td><strong>Comprar 50 un</strong></td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="product-avatar">AC</div>
+                                        <div>
+                                            <strong>Açúcar 1kg</strong>
+                                            <span class="product-sku">SKU: ACU-001</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Básicos</td>
+                                <td><span class="stock-qty">22 un</span></td>
+                                <td><span class="demand-qty">35 un</span></td>
+                                <td><span class="status-badge warning">Atenção</span></td>
+                                <td><strong>Comprar 40 un</strong></td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="product-avatar">OL</div>
+                                        <div>
+                                            <strong>Óleo 900ml</strong>
+                                            <span class="product-sku">SKU: OLE-001</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Básicos</td>
+                                <td><span class="stock-qty">18 un</span></td>
+                                <td><span class="demand-qty">28 un</span></td>
+                                <td><span class="status-badge warning">Atenção</span></td>
+                                <td><strong>Comprar 35 un</strong></td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="product-avatar">CA</div>
+                                        <div>
+                                            <strong>Café 500g</strong>
+                                            <span class="product-sku">SKU: CAF-001</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Bebidas</td>
+                                <td><span class="stock-qty">45 un</span></td>
+                                <td><span class="demand-qty">52 un</span></td>
+                                <td><span class="status-badge normal">Normal</span></td>
+                                <td><strong>Comprar 30 un</strong></td>
+                                <td>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </main>
+    </div>
+
+    <script>
+        fetch("sidebar.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("sidebar-container").innerHTML = data;
+            });
+    </script>
+    <script src="../js/main.js"></script>
+    <script type="module" src="../js/dashboard.js"></script>
+</body>
+
+</html>
