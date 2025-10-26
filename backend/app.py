@@ -5,8 +5,9 @@ import pandas as pd
 from datetime import datetime
 import os
 import numpy as np
-
-from helper import to_python_type, calcular_variacao
+from sklearn.linear_model import LinearRegression
+from datetime import timedelta
+from helper import to_python_type
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 CORS(app)
@@ -84,13 +85,6 @@ def get_dashboard_data():
         else:
             total_vencimento = 0
 
-        # --- Gráfico: Previsão de demanda (últimos 7 dias)
-        ultimos_7 = vendas.groupby('data')['quantidade_vendida'].sum().tail(7)
-        vendas_labels = [d.strftime("%d/%m") for d in ultimos_7.index]
-        vendas_valores = [float(v) for v in ultimos_7.values]
-
-
-       
         # =============================
         # NOVO: Status do estoque dinâmico
         # =============================
@@ -160,8 +154,8 @@ def get_dashboard_data():
             "excesso_estoque": to_python_type(excesso),
             "sugestoes_compra": to_python_type(total_sugestoes),
             "oportunidade_valor": to_python_type(oportunidade_valor),
-            "vendas_labels": vendas_labels,
-            "vendas_valores": [float(v) for v in vendas_valores],
+            # "vendas_labels": vendas_labels,
+            # "vendas_valores": [float(v) for v in vendas_valores],
             "produtos_proximos_vencimento": to_python_type(total_vencimento),
             "estoque_status": {
                 "normal": to_python_type(normal),
@@ -201,5 +195,60 @@ def get_categorias():
         return jsonify({"erro": str(e)}), 500
 
 
+
+@app.route('/api/previsao')
+def previsao_demanda():
+    """Previsão de demanda para os próximos 30 dias"""
+    try:
+        # Carregar dados de vendas
+        with open(SALES_FILE, encoding='utf-8') as f:
+            vendas_json = json.load(f)
+
+        # Converter vendas em DataFrame
+        vendas_expandidas = []
+        for venda in vendas_json:
+            data_venda = venda["data_venda"]
+            for item in venda["itens"]:
+                vendas_expandidas.append({
+                    "data": data_venda,
+                    "quantidade_vendida": item["quantidade"]
+                })
+
+        vendas = pd.DataFrame(vendas_expandidas)
+        vendas["data"] = pd.to_datetime(vendas["data"])
+        vendas_diarias = vendas.groupby("data")["quantidade_vendida"].sum().reset_index()
+
+        # Ordenar por data
+        vendas_diarias = vendas_diarias.sort_values("data")
+
+        # Criar coluna numérica de dias (para regressão)
+        vendas_diarias["dias"] = (vendas_diarias["data"] - vendas_diarias["data"].min()).dt.days
+
+        # Modelo de Regressão Linear
+        X = vendas_diarias[["dias"]].values
+        y = vendas_diarias["quantidade_vendida"].values
+        model = LinearRegression()
+        model.fit(X, y)
+
+        # Gerar previsões para os próximos 30 dias
+        ultimo_dia = vendas_diarias["dias"].max()
+        previsao_dias = np.arange(ultimo_dia + 1, ultimo_dia + 31).reshape(-1, 1)
+        previsoes = model.predict(previsao_dias)
+
+        # Datas futuras
+        ultima_data = vendas_diarias["data"].max()
+        datas_futuras = [ultima_data + timedelta(days=i) for i in range(1, 31)]
+
+        # Montar resultado
+        resultado = [
+            {"data": d.strftime("%d/%m"), "valor": int(round(v))}
+            for d, v in zip(datas_futuras, previsoes)
+        ]
+
+        return jsonify(resultado)
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+    
 if __name__ == '__main__':
     app.run(debug=True)

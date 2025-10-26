@@ -15,25 +15,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     atualizarKpiTrend("excesso", data.variacoes.excesso);
     atualizarKpiTrend("sugestoes", data.variacoes.sugestoes);
 
-    //Gráfico demanda
+     // Gráfico de previsão de demanda para os próximos 30 dias (dados reais do backend)
     const demandCtx = document.getElementById('demandChart');
     if (demandCtx) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/previsao`);
+        const previsaoData = await response.json();
+
+        // Extrai labels e valores do JSON
+        const labels = previsaoData.map(item => item.data);
+        const valores = previsaoData.map(item => item.valor);
+
         new Chart(demandCtx, {
             type: 'line',
             data: {
-                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                labels: labels,
                 datasets: [
                     {
-                        label: 'Real',
-                        data: [65, 78, 85, 72, 90, 95, 88],
-                        borderColor: '#2563EB',
-                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Previsto',
-                        data: [null, null, null, null, null, 98, 105],
+                        label: 'Previsão (próximos 30 dias)',
+                        data: valores,
                         borderColor: '#10B981',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
                         borderDash: [5, 5],
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
+                        display: true
                     },
                     tooltip: {
                         mode: 'index',
@@ -62,17 +62,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                         beginAtZero: true,
                         grid: {
                             color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Quantidade Prevista'
                         }
                     },
                     x: {
                         grid: {
                             display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Data'
                         }
                     }
                 }
             }
         });
+    } catch (error) {
+        console.error("Erro ao carregar previsão de demanda:", error);
     }
+    }   
+
 
     // Stock Status Chart
     const statusCtx = document.getElementById('statusChart');
