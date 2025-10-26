@@ -89,21 +89,57 @@ def get_dashboard_data():
         vendas_labels = [d.strftime("%d/%m") for d in ultimos_7.index]
         vendas_valores = [float(v) for v in ultimos_7.values]
 
-        # --- Status do estoque
-        normal = len(estoque[(estoque["quantidade_estoque"] >= 10) & (estoque["quantidade_estoque"] <= 100)])
-        atencao = len(estoque[(estoque["quantidade_estoque"] > 5) & (estoque["quantidade_estoque"] < 10)])
-        critico = total_risco
 
+       
+        # =============================
+        # NOVO: Status do estoque dinâmico
+        # =============================
+        estoque["quantidade_estoque"] = pd.to_numeric(
+            estoque["quantidade_estoque"], errors="coerce"
+        ).fillna(0)
+        qtd = estoque["quantidade_estoque"]
+
+        # Definir percentis dinâmicos
+        limite_critico = qtd.quantile(0.10)   # 10% menores
+        limite_atencao = qtd.quantile(0.25)   # 25% menores
+        limite_excesso = qtd.quantile(0.90)   # 10% maiores
+
+        def classificar_estoque(valor):
+            if pd.isna(valor):
+                return "critico"
+            elif valor <= limite_critico:
+                return "critico"
+            elif valor <= limite_atencao:
+                return "atencao"
+            elif valor >= limite_excesso:
+                return "excesso"   # excesso identificado separadamente
+            else:
+                return "normal"
+
+        estoque["status_estoque"] = estoque["quantidade_estoque"].apply(classificar_estoque)
+
+        # Contagem por categoria
+        status_counts = estoque["status_estoque"].value_counts().to_dict()
+
+
+
+        normal = status_counts.get("normal", 0)
+        atencao = status_counts.get("atencao", 0)
+        critico = status_counts.get("critico", 0)
+        excesso = status_counts.get("excesso", 0)
+
+        atencao_total = atencao + excesso
+        
         # --- Alertas
         alertas = []
-        for _, row in produtos_em_risco.iterrows():
+        for _, row in estoque[estoque["status_estoque"] == "critico"].iterrows():
             alertas.append({
                 "tipo": "Ruptura Iminente",
                 "produto": row['nome_produto'],
                 "estoque_atual": int(row['quantidade_estoque']),
                 "previsao_dias": max(1, row['quantidade_estoque'] // 3)
             })
-        for _, row in excesso_estoque.iterrows():
+        for _, row in estoque[estoque["status_estoque"] == "excesso"].iterrows():
             alertas.append({
                 "tipo": "Excesso de Estoque",
                 "produto": row['nome_produto'],
@@ -111,16 +147,17 @@ def get_dashboard_data():
                 "dias_parado": 45
             })
 
-        variacao_risco = round((total_risco / (total_risco + 1)) * 5, 1)
-        variacao_excesso = round((total_excesso / (total_excesso + 1)) * 3, 1)
+        # --- Variações simuladas
+        variacao_risco = round((critico / (critico + 1)) * 5, 1)
+        variacao_excesso = round((excesso / (excesso + 1)) * 3, 1)
         variacao_sugestoes = round((total_sugestoes / (total_sugestoes + 1)) * 2, 1)
         variacao_oportunidade = round((oportunidade_valor / (oportunidade_valor + 1)) * 4, 1)
         variacao_vencimento = round((total_vencimento / (len(estoque) + 1)) * 5, 1)
 
         # Retornar JSON
         return jsonify({
-            "produtos_em_risco": to_python_type(total_risco),
-            "excesso_estoque": to_python_type(total_excesso),
+            "produtos_em_risco": to_python_type(critico),
+            "excesso_estoque": to_python_type(excesso),
             "sugestoes_compra": to_python_type(total_sugestoes),
             "oportunidade_valor": to_python_type(oportunidade_valor),
             "vendas_labels": vendas_labels,
@@ -128,8 +165,9 @@ def get_dashboard_data():
             "produtos_proximos_vencimento": to_python_type(total_vencimento),
             "estoque_status": {
                 "normal": to_python_type(normal),
-                "atencao": to_python_type(atencao),
-                "critico": to_python_type(critico)
+                "atencao": to_python_type(atencao_total),
+                "critico": to_python_type(critico),
+                "excesso": to_python_type(excesso)
             },
             "variacoes": {
                 "risco": float(variacao_risco),
@@ -138,7 +176,12 @@ def get_dashboard_data():
                 "oportunidade": float(variacao_oportunidade),
                 "vencimento": float(variacao_vencimento)
             },
-            "alertas": alertas
+            "alertas": alertas,
+            "limites_dinamicos": {
+                "critico": round(float(limite_critico), 2),
+                "atencao": round(float(limite_atencao), 2),
+                "excesso": round(float(limite_excesso), 2)
+            }
         })
 
     except Exception as e:
